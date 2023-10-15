@@ -1,0 +1,291 @@
+1-A. Addition of two 8-bit num.
+
+	  MVI C,0H
+      LDA 2050H
+      MOV B,A
+      LDA 2051H
+      ADD B
+LOOP:STA 2053H
+	 HLT
+
+1-B. Addition of two 16-bit number.
+
+	  MVI C,04H
+      LDA 2050H
+      MOV B,A
+      LDA 2052H
+      ADD B
+	  STA 2055H
+      LDA 2051H
+      MOV D,A
+      LDA 2053H
+      ADD D
+      JNC LOOP
+      DCR C
+LOOP:STA 2054H
+	  MOV A,D
+      STA 2056H
+	  HLT
+
+1-C. Subtraction of two 8-bit numvers.
+
+	  MVI C,00H
+      LDA 2050H
+      MOV B,A
+      LDA 2051H
+      SUB B
+      JNC LOOP
+      CMA
+      INR C
+      INR A
+LOOP:STA 2053H
+	  MOV A,C
+      STA 2054H
+      HLT
+
+2 – A. Prog for 8 bit multi
+	 MVI D,00H
+     LDA 2050H
+     MOV B,A
+     LDA 2051H
+     MOV C,A
+     LDA 2053H
+LOOP2:ADD B
+	 JNC LOOP
+     INR D
+LOOP:DCR C 
+	 JNZ LOOP2
+     STA 2054H
+     MOV A,D
+     STA 2055H
+     HLT
+
+2 – B. Prog for 8 bit DIV
+
+	 MVI D,00H
+     LXI H ,2050H
+     MOV B,M
+     INX H
+     MOV C,M
+     MOV A,B
+LOOP:SUB C
+	 INR D 
+     CMP D
+     JNC LOOP
+     STA 2052H
+     MOV A,D
+     STA 2053H
+     HLT
+     
+3. Prog to add a block of 8-bit data stored in memo locations.
+
+	 LXI H ,2050H
+     LXI D,2080H
+     MVI C,04H
+LOOP:MOV A,M 
+	 STAX D
+     INX H
+     INX D
+     DCR C
+     JNZ LOOP
+     HLT
+
+4-A. Find minimum from two 8-bit num.
+	 LXI H ,2050H
+     MOV B,M
+     INX H
+     MOV A,M
+     CMP B
+     JC LOOP
+     MOV A,B
+     LDA 2050H
+     MOV B,A 
+     LDA 2051H
+     CMP B
+     JC LOOP
+     MOV A,B
+LOOP:STA 2053H
+     HLT
+
+4-B. Find minimum from block of num.
+
+	 MVI C,04H
+     LXI H ,2050H
+     MOV A,M
+     DCR C
+LOOP2:INX H
+     MOV B,M
+     CMP B
+     JC LOOP
+     MOV A,B
+LOOP:STA 2055H
+	 DCR C
+	 JNZ LOOP2
+     HLT
+
+5-A. Find max from two 8-bit num.
+
+	 LDA 2050H
+     MOV B,A
+     LDA 2051H
+     CMP B
+     JNC LOOP
+     MOV A,B
+LOOP:STA 2053H
+	HLT
+
+5-B. . Find maximum from block of num.
+
+	 MVI C,04H
+     LXI H ,2050H
+     MOV A,M
+     DCR C
+LOOP2:INX H
+     MOV B,M
+     CMP B
+     JNC LOOP
+     MOV A,B
+LOOP:STA 2055H
+	 DCR C
+	 JNZ LOOP2
+     HLT
+
+6-A. short data into ascending order.
+
+	  MVI C,04H
+      DCR C
+LOOP3:MOV B,C
+	  LXI H,2052H
+LOOP2:MOV A,M
+	  INX H
+      CMP M
+      JC LOOP
+      MOV D,M
+      MOV M,A
+      DCX H
+      MOV M,D
+      INX H
+LOOP:DCR B
+	  JNZ LOOP2
+	  DCR C
+      JNZ LOOP3
+      HLT
+
+6-B. short data into descending order.
+
+	  MVI C,04H
+      DCR C
+LOOP3:MOV B,C
+	  LXI H,2052H
+LOOP2:MOV A,M
+	  INX H
+      CMP M
+      JNC LOOP
+      MOV D,M
+      MOV M,A
+      DCX H
+      MOV M,D
+      INX H
+LOOP:DCR B
+	  JNZ LOOP2
+	  DCR C
+      JNZ LOOP3
+      HLT
+
+7-A. BCD to binary.
+LXI H,2050H
+     MOV B,M
+     MOV A,B
+     ANI 0FH
+     MOV C,A
+     MOV A,B
+     ANI F0H
+     RRC
+     RRC
+     RRC
+     RRC
+     MOV D,A
+     MVI E,0AH
+     XRA A
+LOOP:ADD E
+	 DCR D
+     JNZ LOOP
+     ADD C
+     STA 2053H
+     HLT
+
+7-B. Binary to BCD.
+
+	  LDA 2500H
+      MVI B,00H
+      MOV C,B
+X:CPI 64H
+	  JC LOOP
+      SUI 64H
+      INR B
+      JMP X
+LOOP:CPI 0AH
+	  JC LOOP2
+      SUI 0AH
+      INR C
+      JMP LOOP
+LOOP2:STA 2503H
+	  MOV A,B 
+      STA 2501H
+      MOV A,C 
+      STA 2502H
+      HLT
+
+8-A. Binary to ASCII.
+
+	 LDA 2050H
+     CPI 0AH
+     JC LOOP
+     ADI 07H
+LOOP:ADI 30H
+	 STA 2052H
+     HLT
+
+8-B. ASCII to binary.
+
+	 LDA 2050H
+     SUI 30H
+     CPI 0AH
+     JC LOOP
+     SUI 07H
+LOOP:STA 2052H
+	 HLT
+
+9. The sum of a series of even number.
+	  MVI C,04H
+      LXI H,2050H
+      MVI B,00H
+LOOP2:MOV A,M
+      ANI 01H
+      JNZ LOOP
+      MOV A,B
+      ADD M
+      MOV B,A
+LOOP:INX H
+      DCR C
+      JNZ LOOP2
+      STA 2055H
+      HLT
+
+10. The sum of  a series of odd numbers.
+
+	  MVI C,04H
+      MVI B,00H
+      LXI H,2050H
+LOOP2:MOV A,M
+      ANI 01H
+      JZ LOOP
+      MOV A,B
+      ADD M
+      MOV B,A
+LOOP:INX H
+      DCR C
+      JNZ LOOP2
+      MOV A,B
+      STA 2055H
+      HLT
